@@ -1,0 +1,56 @@
+# User specified directories
+gradient_analysis/
+gradient_analysis_math500/
+models/
+plots/
+wandb/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Environment variables
+.env
+.env.local
+
+# Logs
+*.log
+
+# Model checkpoints and outputs
+checkpoints/
+outputs/
+*.pth
+*.ckpt
+*.safetensors
+*.bin
+
+# Data files (uncomment if needed)
+# *.csv
+# *.json
+# *.pkl
+# *.npz
+
+# OS
+.DS_Store
+Thumbs.db
