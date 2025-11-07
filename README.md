@@ -21,6 +21,88 @@ rldynamics/
 ├── gradient_analysis_math500/  # Gradient analysis outputs
 └── reward_tracking_math500/    # Reward tracking outputs
 ```
+## Setting up workspace on delta cluster
+
+
+#### 1. Pull the VERL image (using apptainer)
+```
+apptainer pull xxPathxx/verl-base_0.6.sif docker://verlai/verl:base-verl0.6-cu128-cudnn9.8-torch2.8.0-fa2.7.4
+```
+- move the .sif file wherever you want
+
+#### 2. Set environment variables (example)
+```
+BASE=xxx/akunte2
+PROJECT=$BASE/cs498repo/rldynamic
+VERL_SRC=$BASE/cs498repo/verl
+SIF=$BASE/verl-base_0.6.sif
+```
+
+#### 3. Create directories for persistent storage; (models, logs, pip cache, venv) ---
+```
+mkdir -p "$BASE/hf_cache" "$BASE/model_ckpts" "$BASE/runs_logs" "$BASE/pip_cache" "$BASE/.venvs"
+```
+#### 4. Clone repo : https://github.com/Makr-Xie/rldynamic.git
+- Clone repo One level outside rldynamic
+```
+cs498repo/
+|
+| - verl/
+| - rldynamic/
+
+```
+#### 5. Run Apptainer command once (AFTER REQUESTING COMPUTE FROM CLUSTER)
+
+
+- Make sure you cd into 'workspace' directory first
+
+```
+apptainer exec --cleanenv --nv \
+  -B "$BASE":/mnt/user \
+  --env HF_HOME=/mnt/user/hf_cache \
+  --env XDG_CACHE_HOME=/mnt/user/hf_cache \
+  --env TORCH_HOME=/mnt/user/hf_cache/torch \
+  --env PIP_CACHE_DIR=/mnt/user/pip_cache \
+  --pwd "$PROJECT" \
+  "$SIF" \
+  bash
+```
+
+#### 5.1 Run Bash commands:
+
+```
+python3 -m venv /mnt/user/.venvs/verl
+source /mnt/user/.venvs/verl/bin/activate
+cd verl
+pip3 install -e .
+
+python - <<PY
+import pathlib, torch, verl
+print("✅ VERL:", pathlib.Path(verl.__file__).resolve())
+print("✅ GPU :", torch.cuda.get_device_name(0))
+PY
+```
+
+### Done! Now when you run Apptainer again you can just do:
+
+```
+BASE=xxx
+PROJECT=$BASE/cs498repo/rldynamic
+SIF=$BASE/verl-base_0.6.sif
+
+apptainer exec --cleanenv --nv \
+  -B "$BASE":/mnt/user \
+  --env HF_HOME=/mnt/user/hf_cache \
+  --env TRANSFORMERS_CACHE=/mnt/user/hf_cache \
+  --env XDG_CACHE_HOME=/mnt/user/hf_cache \
+  --env TORCH_HOME=/mnt/user/hf_cache/torch \
+  --env PIP_CACHE_DIR=/mnt/user/pip_cache \
+  --pwd "$PROJECT" \
+  "$SIF" \
+  bash -lc "source /mnt/user/.venvs/verl/bin/activate && bash"
+```
+
+
 
 ## 🎯 Custom Training Implementations
 
@@ -333,5 +415,3 @@ def save_gradients_async(data, file_path):
 thread = threading.Thread(target=save_gradients_async, args=(save_data, filename))
 thread.start()
 ```
-
-
