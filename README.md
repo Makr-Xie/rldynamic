@@ -53,8 +53,7 @@ cs498repo/
 ```
 #### 5. Run Apptainer command once (AFTER REQUESTING COMPUTE FROM CLUSTER)
 
-
-- Make sure you cd into 'workspace' directory first
+- Make sure you cd into your 'workspace' directory first
 
 ```
 apptainer exec --cleanenv --nv \
@@ -83,13 +82,13 @@ print("✅ GPU :", torch.cuda.get_device_name(0))
 PY
 ```
 
-### Done! Now when you run Apptainer again you can just do:
+### Done! Now when you run Apptainer again you can just do (example using my directories):
 
 ```
-BASE=xxx
-PROJECT=$BASE/cs498repo/rldynamic
-SIF=$BASE/verl-base_0.6.sif
-
+#assume that xxxx is the base directory
+export IMG=xxxx/akunte2/verl-base_0.6.sif
+export BASE=xxxx
+export PROJECT=$BASE/cs498repo/rldynamic
 apptainer exec --cleanenv --nv \
   -B "$BASE":/mnt/user \
   --env HF_HOME=/mnt/user/hf_cache \
@@ -98,8 +97,16 @@ apptainer exec --cleanenv --nv \
   --env TORCH_HOME=/mnt/user/hf_cache/torch \
   --env PIP_CACHE_DIR=/mnt/user/pip_cache \
   --pwd "$PROJECT" \
-  "$SIF" \
-  bash -lc "source /mnt/user/.venvs/verl/bin/activate && bash"
+  "$IMG" \
+  bash -lc '. /mnt/user/.venvs/verl/bin/activate; exec bash'
+```
+
+### Then you should be in the Apptainer environment, and you can confirm that verl,torch,gpu are working by doing (after running 'python' inside the apptainer container):
+
+```
+import torch
+import verl
+print(torch.cuda.get_device_name(0), verl.__file__)
 ```
 
 
