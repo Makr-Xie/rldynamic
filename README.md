@@ -26,6 +26,10 @@ rldynamics/
 If you have unrestricted access to your machine please follow the verl installation instructions here: https://verl.readthedocs.io/en/latest/start/install.html
 With FSDP and VLLM options.
 
+#### NOTES
+1. You might need to explicitly install pyzmq via 'pip install pyzmq'
+2. You might need to explicitly install flash-attn, otherwise switch to eager attention like this: https://verl.readthedocs.io/en/latest/advance/attention_implementation.html#ppo-training-with-eager-attention
+
 
 ## Setting up workspace on delta cluster
 
