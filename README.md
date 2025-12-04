@@ -70,8 +70,10 @@ print(torch.cuda.get_device_name(0), verl.__file__)
 
 ```
 
-### 8. Run grpo script (*_delta.sh)
-
+### 8. Run grpo script (*_delta.sh), you may need to change the arguments to our ppo trainer wrt run_grpo.sh or run_grpo_custom.sh
+```
+bash scripts/run_grpo_delta.sh #or some other delta-tested script
+```
 
 *if you run into dataset loader error please do pip install "datasets==4.0.0" then exit apptainer and re-run it*
 
