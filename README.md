@@ -23,7 +23,7 @@ rldynamics/
 ```
 
 
-## Setting up workspace on delta cluster
+## Setting up workspace on UIUC delta cluster. Please request GPU node before you do this
 
 #### 1. Pull the VERL image (using apptainer)
 ```
@@ -47,20 +47,10 @@ $BASE/
 #### 5. Run Apptainer with the image and env variables ($IMG = .sif path), make sure you are inside cs498repo/
 
 ```
-apptainer exec --cleanenv --nv \
-  -B "$BASE":/mnt/user \
-  --env HF_HOME=/mnt/user/hf_cache \
-  --env TRANSFORMERS_CACHE=/mnt/user/hf_cache \
-  --env XDG_CACHE_HOME=/mnt/user/hf_cache \
-  --env TORCH_HOME=/mnt/user/hf_cache/torch \
-  --env PIP_CACHE_DIR=/mnt/user/pip_cache \
-  --pwd /mnt/user/cs498repo/rldynamic \
-  "$IMG" \
-  bash
+apptainer exec --cleanenv --nv   -B "$BASE":/mnt/user   --env HF_HOME=/mnt/user/hf_cache   --env TRANSFORMERS_CACHE=/mnt/user/hf_cache   --env XDG_CACHE_HOME=/mnt/user/hf_cache   --env TORCH_HOME=/mnt/user/hf_cache/torch   --env PIP_CACHE_DIR=/mnt/user/pip_cache   --pwd /mnt/user/cs498repo/rldynamic   "$IMG"   bash
 ```
 
 ###  Then you should be in the Apptainer environment
-
 ### 6.1 But before running anything you need to install verl:
 
 ```
@@ -74,6 +64,19 @@ import torch
 import verl
 print(torch.cuda.get_device_name(0), verl.__file__)
 ```
+
+### 7.1 Download datasets/models using the utils/
+```
+
+```
+
+### 8. Run grpo script (*_delta.sh)
+
+
+*if you run into dataset loader error please exit apptainer and re-run it
+
+
+
 
 ## 🎯 Custom Training Implementations
 
