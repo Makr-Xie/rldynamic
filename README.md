@@ -73,7 +73,7 @@ print(torch.cuda.get_device_name(0), verl.__file__)
 ### 8. Run grpo script (*_delta.sh)
 
 
-*if you run into dataset loader error please exit apptainer and re-run it
+*if you run into dataset loader error please do pip install "datasets==4.0.0" then exit apptainer and re-run it*
 
 
 
