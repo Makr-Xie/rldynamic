@@ -67,6 +67,9 @@ print(torch.cuda.get_device_name(0), verl.__file__)
 
 ### 7.1 Download datasets/models using the utils/
 ```
+cd utils
+python download_model.py #this will automatically download the model (to match our results you can change the model name using --model-name)
+python process_math500.pt --local_dir ../data/math500 #you might need to make this folder first
 
 ```
 
