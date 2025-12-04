@@ -21,6 +21,12 @@ rldynamics/
 ├── gradient_analysis_math500/  # Gradient analysis outputs
 └── reward_tracking_math500/    # Reward tracking outputs
 ```
+
+## Setting up normally
+If you have unrestricted access to your machine please follow the verl installation instructions here: https://verl.readthedocs.io/en/latest/start/install.html
+With FSDP and VLLM options.
+
+
 ## Setting up workspace on delta cluster
 
 
