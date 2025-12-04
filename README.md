@@ -22,84 +22,31 @@ rldynamics/
 └── reward_tracking_math500/    # Reward tracking outputs
 ```
 
-## Setting up normally
-If you have unrestricted access to your machine please follow the verl installation instructions here: https://verl.readthedocs.io/en/latest/start/install.html
-With FSDP and VLLM options.
-
-#### NOTES
-1. You might need to explicitly install pyzmq via 'pip install pyzmq'
-2. You might need to explicitly install vllm via 'pip install vllm'
-3. You might need to explicitly install flash-attn, otherwise switch to eager attention like this: https://verl.readthedocs.io/en/latest/advance/attention_implementation.html#ppo-training-with-eager-attention
-
 
 ## Setting up workspace on delta cluster
 
-
 #### 1. Pull the VERL image (using apptainer)
 ```
-apptainer pull xxPathxx/verl-base_0.6.sif docker://verlai/verl:base-verl0.6-cu128-cudnn9.8-torch2.8.0-fa2.7.4
+apptainer pull verl-vllm_0.8.4.sif docker://hiyouga/verl:ngc-th2.6.0-cu126-vllm0.8.4-flashinfer0.2.2-cxx11abi0
 ```
-- move the .sif file wherever you want
-
-#### 2. Set environment variables (example)
-```
-BASE=xxx/akunte2
-PROJECT=$BASE/cs498repo/rldynamic
-VERL_SRC=$BASE/cs498repo/verl
-SIF=$BASE/verl-base_0.6.sif
-```
+- move the .sif file wherever you want, ideally put it in: cs498repo/
 
 #### 3. Create directories for persistent storage; (models, logs, pip cache, venv) ---
 ```
 mkdir -p "$BASE/hf_cache" "$BASE/model_ckpts" "$BASE/runs_logs" "$BASE/pip_cache" "$BASE/.venvs"
 ```
+for me, BASE=one level outside cs498repo
+
 #### 4. Clone repo : https://github.com/Makr-Xie/rldynamic.git
-- Clone repo One level outside rldynamic
 ```
-cs498repo/
-|
-| - verl/
-| - rldynamic/
-
+$BASE/
+  - cs498repo/
+   - verl/
+   - rldynamic/
 ```
-#### 5. Run Apptainer command once (AFTER REQUESTING COMPUTE FROM CLUSTER)
-
-- Make sure you cd into your 'workspace' directory first
+#### 5. Run Apptainer with the image and env variables ($IMG = .sif path), make sure you are inside cs498repo/
 
 ```
-apptainer exec --cleanenv --nv \
-  -B "$BASE":/mnt/user \
-  --env HF_HOME=/mnt/user/hf_cache \
-  --env XDG_CACHE_HOME=/mnt/user/hf_cache \
-  --env TORCH_HOME=/mnt/user/hf_cache/torch \
-  --env PIP_CACHE_DIR=/mnt/user/pip_cache \
-  --pwd "$PROJECT" \
-  "$SIF" \
-  bash
-```
-
-#### 5.1 Run Bash commands:
-
-```
-python3 -m venv /mnt/user/.venvs/verl
-source /mnt/user/.venvs/verl/bin/activate
-cd verl
-pip3 install -e .
-
-python - <<PY
-import pathlib, torch, verl
-print("✅ VERL:", pathlib.Path(verl.__file__).resolve())
-print("✅ GPU :", torch.cuda.get_device_name(0))
-PY
-```
-
-### Done! Now when you run Apptainer again you can just do (example using my directories):
-
-```
-#assume that xxxx is the base directory
-export IMG=xxxx/akunte2/verl-base_0.6.sif
-export BASE=xxxx
-export PROJECT=$BASE/cs498repo/rldynamic
 apptainer exec --cleanenv --nv \
   -B "$BASE":/mnt/user \
   --env HF_HOME=/mnt/user/hf_cache \
@@ -107,20 +54,26 @@ apptainer exec --cleanenv --nv \
   --env XDG_CACHE_HOME=/mnt/user/hf_cache \
   --env TORCH_HOME=/mnt/user/hf_cache/torch \
   --env PIP_CACHE_DIR=/mnt/user/pip_cache \
-  --pwd "$PROJECT" \
+  --pwd /mnt/user/cs498repo/rldynamic \
   "$IMG" \
-  bash -lc '. /mnt/user/.venvs/verl/bin/activate; exec bash'
+  bash
 ```
 
-### Then you should be in the Apptainer environment, and you can confirm that verl,torch,gpu are working by doing (after running 'python' inside the apptainer container):
+###  Then you should be in the Apptainer environment
 
+### 6.1 But before running anything you need to install verl:
+
+```
+cd verl
+pip install --no-deps -e .
+```
+
+### 6.2 Check if verl and other libraries are installed
 ```
 import torch
 import verl
 print(torch.cuda.get_device_name(0), verl.__file__)
 ```
-
-
 
 ## 🎯 Custom Training Implementations
 
