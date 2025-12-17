@@ -9,6 +9,7 @@ and can be extended with gradient analysis functionality.
 import sys
 import os
 
+sys.path.insert(0, '/home/qian.niu/Takoai/Medical_Reasoning/Mark/rldynamics')
 
 import torch
 import numpy as np

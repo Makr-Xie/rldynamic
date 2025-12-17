@@ -5,10 +5,10 @@ set -x
 unset ROCR_VISIBLE_DEVICES
 
 REWARD_FUNCTION_PATH="/home/qian.niu/Takoai/Medical_Reasoning/Mark/rldynamics/utils/rewards.py"
-MODEL_PATH="/home/qian.niu/Takoai/Medical_Reasoning/Mark/rldynamics/models/Qwen3-4B"
+MODEL_PATH="/home/qian.niu/Takoai/Medical_Reasoning/Mark/rldynamics/models/Qwen2.5-3B-Instruct"
 HOME="/home/qian.niu/Takoai/Medical_Reasoning/Mark/rldynamics/verl"
 
-python3 -m verl.trainer.main_ppo \
+python3 -m custom_training.custom_main_ppo_2 \
     algorithm.adv_estimator=grpo \
     data.train_files=$HOME/data/math500/train.parquet \
     data.val_files=$HOME/data/math500/test.parquet \
@@ -20,8 +20,8 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.model.path=${MODEL_PATH}\
     actor_rollout_ref.actor.optim.lr=1e-6 \
     actor_rollout_ref.model.use_remove_padding=True \
-    actor_rollout_ref.actor.ppo_mini_batch_size=32 \
-    actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=32 \
+    actor_rollout_ref.actor.ppo_mini_batch_size=16 \
+    actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=4 \
     actor_rollout_ref.actor.use_kl_loss=True \
     actor_rollout_ref.actor.kl_loss_coef=0.001 \
     actor_rollout_ref.actor.kl_loss_type=low_var_kl \
@@ -43,9 +43,9 @@ python3 -m verl.trainer.main_ppo \
     trainer.experiment_name='qwen3_4b_math500' \
     trainer.n_gpus_per_node=8 \
     trainer.nnodes=1 \
-    trainer.save_freq=20 \
-    trainer.test_freq=5 \
-    trainer.total_epochs=40 \
+    trainer.save_freq=50 \
+    trainer.test_freq=10 \
+    trainer.total_epochs=20 \
     custom_reward_function.path="${REWARD_FUNCTION_PATH}" \
     custom_reward_function.name="compute_score" \
     $@

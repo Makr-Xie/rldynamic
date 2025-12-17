@@ -19,7 +19,7 @@ if __name__ == "__main__":
     parser.add_argument("--hdfs_dir", default=None)
     parser.add_argument("--local_dataset_path", default=None, help="The local path to the raw dataset, if it exists.")
     parser.add_argument(
-        "--local_save_dir", default="../rldynamics/verl/data/math500", help="The save directory for the preprocessed dataset."
+        "--local_save_dir", default="/home/qian.niu/Takoai/Medical_Reasoning/Mark/rldynamics/verl/data/math500", help="The save directory for the preprocessed dataset."
     )
 
     args = parser.parse_args()
@@ -32,8 +32,13 @@ if __name__ == "__main__":
     else:
         dataset = datasets.load_dataset(data_source)
 
-    train_dataset = dataset["test"]
-    test_dataset = dataset["test"].select(range(10))
+    # 原始数据集有 500 个样本，选 30 个作为 validation，其余 470 个用于训练
+    full_dataset = dataset["test"]
+
+    # 随机选取 30 个作为 validation（固定 seed 保证可复现）
+    full_dataset = full_dataset.shuffle(seed=42)
+    test_dataset = full_dataset.select(range(30))
+    train_dataset = full_dataset.select(range(30, len(full_dataset)))
 
     instruction_following = 'Let\'s think step by step and output the final answer in \\boxed{your answer here}.'
 

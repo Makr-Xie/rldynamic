@@ -54,7 +54,7 @@ def compute_format_score(solution_str, **kwargs):
     return min(score, 1.0)
 
 
-def compute_length_score(solution_str, max_length=1200, **kwargs):
+def compute_length_score(solution_str, max_length=800, **kwargs):
     response_len = len(solution_str)
     score = 1 - abs(response_len / max_length - 1)
     return max(score, 0.0)

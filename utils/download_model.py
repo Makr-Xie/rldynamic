@@ -1,8 +1,8 @@
 import os
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-model_name = "Qwen/Qwen3-4B"
-local_model_dir = "../rldynamics/models/Qwen3-4B"
+model_name = "Qwen/Qwen3-8B"
+local_model_dir = "/home/qian.niu/Takoai/Medical_Reasoning/Mark/rldynamics/models/Qwen3-8B"
 
 os.makedirs(local_model_dir, exist_ok=True)
 
